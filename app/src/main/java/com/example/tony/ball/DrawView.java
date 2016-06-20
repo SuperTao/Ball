@@ -7,75 +7,70 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.util.Log;
 import android.view.View;
 
 /**
- * Created by Tony on 2016/6/16.
+ * Created by Tony on 2016/6/20.
  */
 public class DrawView extends View {
-    private final Context context;
-    private int centerPointX = 300;
-    private int centerPointY = 300;
+    private int xMin = 0;
+    private int yMin = 0;
+    private int xMax;
+    private int yMax;
+    private float ballRadius = 80;
+    private float ballX = ballRadius +20;
+    private float ballY = ballRadius +40;
+    private float ballSpeedX = 10;
+    private float ballSpeedY = 6;
+    private RectF ballBounds;
+    private Paint paint;
 
-    private Canvas canvas;
-    private Paint p;
     public DrawView(Context context) {
         super(context);
-        this.context = context;
-    }
-    public void setCenterPointX(int x) {
-        this.centerPointX = x;
-    }
-
-    public int getCenterPointX() {
-        return this.centerPointX;
-    }
-
-    public void setCenterPointY(int y) {
-        this.centerPointY = y;
-    }
-
-    public int getCenterPointY() {
-        return this.centerPointY;
+        Log.e("draw", "DrawView:");
+        ballBounds = new RectF();
+        paint = new Paint();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        this.canvas = canvas;
-        //创建画笔
-        p = new Paint();
-        p.setColor(Color.GREEN);
+        ballBounds.set(ballX - ballRadius, ballY - ballRadius, ballX + ballRadius, ballY + ballRadius);
+        paint.setColor(Color.GREEN);
+        canvas.drawOval(ballBounds, paint);
 
-//        canvas.drawCircle(300, 600, 50, p);
-//        p.setAntiAlias(false);// 设置画笔的锯齿效果。 true是去除，大家一看效果就明白了
-        canvas.drawCircle(centerPointX, centerPointY, 60, p);
-
-/*        canvas.drawText("画矩形：", 10, 80, p);
-        p.setColor(Color.GRAY);// 设置灰色
-        p.setStyle(Paint.Style.FILL);//设置填满
-        canvas.drawRect(60, 60, 80, 80, p);// 正方形
-        canvas.drawRect(60, 90, 160, 100, p);// 长方形
-*/
-/*
-        // 设置渐变色
-        Shader mShader = new LinearGradient(10, 50, 200, 50,
-                new int[] { Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW,
-                        Color.LTGRAY }, null, Shader.TileMode.REPEAT);
-        p.setShader(mShader);
-        //一个长方形
-        RectF oval2 = new RectF(60, 100, 200, 240);
-        //将扇形画在长方形里面
-        // 画弧，第一个参数是RectF：该类是第二个参数是角度的开始，第三个参数是多少度，第四个参数是真的时候画扇形，是假的时候画弧线
-        canvas.drawArc(oval2, 400, 260, true, p);
-        //画椭圆
-        oval2.set(410,100,500,260);
-        canvas.drawOval(oval2, p);
-*/
+        update();
+        //这里相当于sleep 30ms之后就调用 invalidate
+        try {
+            Thread.sleep(30);
+        } catch (InterruptedException e) { }
+        //强制从新绘制,运行一次就会从新调用一次onDraw()函数
+        invalidate();
     }
 
-  //  public void drawCircle(float x,float y,float radius){
-   //     canvas.drawCircle(x, y, radius, p);
-    //    //invalidate();
-   // }
+    private void update() {
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
+        if (ballX + ballRadius > xMax) {
+            ballSpeedX = -ballSpeedX;
+            ballX = xMax-ballRadius;
+        } else if (ballX - ballRadius < xMin) {
+            ballSpeedX = -ballSpeedX;
+            ballX = xMin+ballRadius;
+        }
+        if (ballY + ballRadius > yMax) {
+            ballSpeedY = -ballSpeedY;
+            ballY = yMax - ballRadius;
+        } else if (ballY - ballRadius < yMin) {
+            ballSpeedY = -ballSpeedY;
+            ballY = yMin + ballRadius;
+        }
+    }
+    @Override
+    public void onSizeChanged(int w, int h, int oldW, int oldH) {
+        // Set the movement bounds for the ball
+        xMax = w-1;
+        yMax = h-1;
+    }
+
 }
