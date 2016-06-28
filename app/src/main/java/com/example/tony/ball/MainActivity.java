@@ -11,17 +11,21 @@ import android.graphics.Color;
 import static android.graphics.Color.*;
 
 public class MainActivity extends AppCompatActivity {
+    int xMax;
+    int yMax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrawView ball = new DrawView(this);
+        xMax = getWindowManager().getDefaultDisplay().getWidth();
+        yMax = getWindowManager().getDefaultDisplay().getHeight();
+        DrawView ball = new DrawView(xMax, yMax, this);
         setContentView(R.layout.activity_main);
         //需要将新建的view添加到布局中才能够显示
         LinearLayout ll = (LinearLayout) findViewById(R.id.root);
         ll.addView(ball);
-        Log.e("log", "oncreate------");
-        ball.setBackgroundColor(Color.BLACK);
+//        Log.e("log", "oncreate------");
+//        ball.setBackgroundColor(Color.BLACK);
     }
 
 }

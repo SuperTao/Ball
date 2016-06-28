@@ -7,3 +7,7 @@ Version1.0
 Version2.0
 
 所有的运动都在view中完成，activity中只实现view的现实。
+
+Version3.0
+实现影子效果
+
