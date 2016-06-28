@@ -9,5 +9,7 @@ Version2.0
 所有的运动都在view中完成，activity中只实现view的现实。
 
 Version3.0
+
 实现影子效果
 
+![](https://github.com/TonySudo/Ball/blob/master/gif/ball.gif)
